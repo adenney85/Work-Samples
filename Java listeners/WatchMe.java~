@@ -1,0 +1,234 @@
+//Alex Denney
+//CISS 111-300
+//Programming Assignment 8 Chapter 14
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+/**
+011
+   This class is an applet that draws two eyes
+012
+   that follow your mouse
+013
+*/
+public class WatchMe extends JApplet
+{
+   /**
+018
+      init method
+019
+   */
+   public void init()
+   {
+      // Set the background color
+      getContentPane().setBackground(Color.gray);
+      // Add a mouse listener
+      addMouseListener(new MyMouseListener());
+      // Add a mouse motion listener
+      addMouseMotionListener(new MyMouseMotionListener());
+   }
+  final int EYE_WIDTH = 30;  // Width of the Eyes
+   final int EYE_HEIGHT = 40; // Height of the Eyes
+   final int PUPIL_SIZE = 10; // Size of the pupil
+   final int EYE_X1 = 70;     // Eye1 X coordinate
+   final int EYE_Y1 = 40;     // Eye1 Y coordinate
+   final int EYE_X2 = 110;    // Eye2 X coordinate
+   final int EYE_Y2 = 40;     // Eye2 Y coordinate
+   boolean Exited = false;    // Exited flag
+   boolean mouseDown = false; // mouseDown flag
+   // enumeration for the status of the Eye
+   enum eyeStatus {STRAIGHT, UP, DOWN, LEFT, RIGHT};
+   eyeStatus currentStatus = eyeStatus.STRAIGHT;
+   public void paint(Graphics g)
+   {
+      // Call the superclass paint method.
+      super.paint(g);
+      // set drawing color
+      g.setColor(Color.black);
+      // Draw 1st Eye
+      g.drawOval(EYE_X1,EYE_Y1, EYE_WIDTH, EYE_HEIGHT);
+      // Draw 2nd Eye
+      g.drawOval(EYE_X2,EYE_Y2, EYE_WIDTH, EYE_HEIGHT);
+      // Draw the pupil
+      switch(currentStatus)
+      {
+         case STRAIGHT:
+            lookStraight(g);
+         break;
+         case UP:
+            lookUp(g);
+         break;
+         case DOWN:
+            lookDown(g);
+         break;
+         case LEFT:
+            lookLeft(g);
+         break;
+         case RIGHT:
+            lookRight(g);
+         break;
+      }
+   }
+   /**
+076
+      Method lookStraight draws the pupils looking straight
+077
+      @param g The applet's Graphics object.
+078
+   */
+   public void lookStraight(Graphics g)
+   {
+      // Draw two filled ovals that represent pupils
+      g.fillOval(EYE_X1 + (EYE_WIDTH/2)-(PUPIL_SIZE/2), 
+            EYE_Y1+(EYE_HEIGHT/2)-(PUPIL_SIZE/2),
+                    PUPIL_SIZE,
+PUPIL_SIZE);
+      g.fillOval(EYE_X2 + (EYE_WIDTH/2)-(PUPIL_SIZE/2),
+            EYE_Y2+(EYE_HEIGHT/2)-(PUPIL_SIZE/2),
+                    PUPIL_SIZE,
+ PUPIL_SIZE);
+   }
+   /**
+094
+      Method lookUp draws the pupils looking up
+095
+      @param g The applet's Graphics object.
+096
+   */
+   public void lookUp(Graphics g)
+   {
+      // Draw two filled ovals that represent pupils
+      g.fillOval(EYE_X1 + (EYE_WIDTH/2)-(PUPIL_SIZE/2),
+            EYE_Y1, PUPIL_SIZE,
+            PUPIL_SIZE);
+      g.fillOval(EYE_X2 + (EYE_WIDTH/2)-(PUPIL_SIZE/2),
+            EYE_Y2, PUPIL_SIZE,
+            PUPIL_SIZE);
+   }
+   /**
+110
+      Method lookDown draws the pupils looking down
+111
+      @param g The applet's Graphics object.
+112
+   */
+   public void lookDown(Graphics g)
+   {
+      // Draw two filled ovals that represent pupils
+      g.fillOval(EYE_X1 + (EYE_WIDTH/2)-(PUPIL_SIZE/2),
+            EYE_Y1 + EYE_HEIGHT-PUPIL_SIZE,
+                    PUPIL_SIZE, PUPIL_SIZE);
+      g.fillOval(EYE_X2 + (EYE_WIDTH/2)-(PUPIL_SIZE/2),
+            EYE_Y2 + EYE_HEIGHT-10,
+            PUPIL_SIZE, PUPIL_SIZE);
+   }
+   /**
+126
+      Method lookLeft draws the pupils looking left
+127
+      @param g The applet's Graphics object.
+128
+  */
+   public void lookLeft(Graphics g)
+   {
+      // Draw two filled ovals that represent pupils
+      g.fillOval(EYE_X1, EYE_Y1+(EYE_HEIGHT/2)-(PUPIL_SIZE/2),
+            PUPIL_SIZE,PUPIL_SIZE);
+      g.fillOval(EYE_X2, EYE_Y1+(EYE_HEIGHT/2)-(PUPIL_SIZE/2),
+            PUPIL_SIZE,PUPIL_SIZE);
+   }
+   /**
+140
+      Method lookRight draws the pupils looking Right
+141
+     @param g The applet's Graphics object.
+142
+   */
+   public void lookRight(Graphics g)
+   {
+      // Draw two filled ovals that represent pupils
+      g.fillOval(EYE_X1+EYE_WIDTH-PUPIL_SIZE,
+            EYE_Y1+(EYE_HEIGHT/2)-(PUPIL_SIZE/2),
+                     PUPIL_SIZE,PUPIL_SIZE);
+      g.fillOval(EYE_X2+EYE_WIDTH-PUPIL_SIZE,
+            EYE_Y1+(EYE_HEIGHT/2)-(PUPIL_SIZE/2),
+                     PUPIL_SIZE,PUPIL_SIZE);
+   }
+   /**
+156
+      Private inner class that handles mouse events
+157
+      Deals with setting the flags for mouseDown and
+158
+      Excited.
+159
+   */
+   private class MyMouseListener implements MouseListener
+   {
+      public void mousePressed(MouseEvent e)
+      {
+         // Set mouseDown flag to true
+         mouseDown = true;
+      }
+      // Overriden Method
+      public void mouseClicked(MouseEvent e)
+     {}
+      public void mouseReleased(MouseEvent e)
+      {
+         // Set mouseDown flag to false
+         mouseDown=false;
+      }
+      public void mouseEntered(MouseEvent e)
+      {
+         // Set Exited flag to false
+         Exited = false;
+      }
+      public void mouseExited(MouseEvent e)
+      {
+         currentStatus = eyeStatus.STRAIGHT;
+         // Set Exited flag to true
+         Exited = true;
+         // Force a call to the paint method
+         repaint();
+      }
+   }
+   /**
+      Private inner class to handle mouse motion events.
+   */
+   private class MyMouseMotionListener implements MouseMotionListener
+   {
+      public void mouseDragged(MouseEvent e)
+      {}
+      public void mouseMoved(MouseEvent e)
+      {
+         // Get the last Status of the Eyes.
+         eyeStatus oldStatus = currentStatus;
+         if(!Exited)
+         {
+            // If mouse is above eyes
+            if(e.getY() < 40)
+               currentStatus = eyeStatus.UP;
+            // If mouse is below eyes
+            else if(e.getY() > EYE_Y1+EYE_HEIGHT)
+               currentStatus = eyeStatus.DOWN;
+            // If mouse is to the left of the eyes
+            else if(e.getX() < EYE_X1)
+               currentStatus = eyeStatus.LEFT;
+            // If mouse is to the right of the eyes
+            else if(e.getX() > EYE_X2 + EYE_WIDTH)
+               currentStatus = eyeStatus.RIGHT;
+            // Else it is on the eyes
+            else
+               currentStatus = eyeStatus.STRAIGHT;
+         }
+         else
+         {
+            currentStatus = eyeStatus.STRAIGHT;
+         }
+         // If status changed repaint this improves display
+         if(oldStatus!=currentStatus)
+         repaint();
+      }
+   }
+}
